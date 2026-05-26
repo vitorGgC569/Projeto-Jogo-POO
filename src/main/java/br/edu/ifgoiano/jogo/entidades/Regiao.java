@@ -13,6 +13,8 @@ public class Regiao {
     private Image image;
     private TipoRegiao tipoRegiao;
 
+    public Regiao (){}
+
     public Regiao(TipoRegiao tipoRegiao){
         this.tipoRegiao = tipoRegiao;
         //Consulta a imagem por tipo de sala
@@ -34,4 +36,5 @@ public class Regiao {
     public void setTipoRegiao(TipoRegiao tipoRegiao) {
         this.tipoRegiao = tipoRegiao;
     }
+
 }
