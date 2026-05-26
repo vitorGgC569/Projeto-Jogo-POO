@@ -40,7 +40,7 @@ public class TelaCombate extends JPanel {
         painelTopo.setOpaque(false);
 
         lblNomeInimigo = new JLabel(
-                "ESQUELETO GUERREIRO",
+                "CAVEIRÃO SATANICO",
                 SwingConstants.CENTER
         );
 
@@ -169,7 +169,7 @@ public class TelaCombate extends JPanel {
 
         // parte do inimigo
         JLabel inimigo = new JLabel(
-                "SPRITE INIMIGO",
+                "caveirão satanico",
                 SwingConstants.CENTER
         );
 
