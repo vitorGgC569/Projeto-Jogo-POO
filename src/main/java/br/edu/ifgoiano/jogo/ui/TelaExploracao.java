@@ -5,9 +5,6 @@ import java.awt.*;
 
 public class TelaExploracao extends JFrame {
 
-    // =====================================
-    // PAINEL PRINCIPAL
-    // =====================================
     private JPanel painelPrincipal;
 
     public TelaExploracao() {
@@ -29,9 +26,6 @@ public class TelaExploracao extends JFrame {
         setVisible(true);
     }
 
-    // =====================================
-    // INTERFACE
-    // =====================================
     private void criarInterface() {
 
         painelPrincipal = new JPanel(
@@ -42,9 +36,6 @@ public class TelaExploracao extends JFrame {
                 Color.BLACK
         );
 
-        // =====================================
-        // TÍTULO
-        // =====================================
         JLabel titulo = new JLabel(
                 "DUNGEON CRAWLER",
                 SwingConstants.CENTER
@@ -76,9 +67,7 @@ public class TelaExploracao extends JFrame {
                 BorderLayout.NORTH
         );
 
-        // =====================================
-        // CENTRO
-        // =====================================
+
         JPanel painelCentro = new JPanel();
 
         painelCentro.setOpaque(false);
@@ -90,9 +79,6 @@ public class TelaExploracao extends JFrame {
                 )
         );
 
-        // =====================================
-        // BOTÃO COMBATE
-        // =====================================
         JButton btnCombate = criarBotao(
                 "ENTRAR EM COMBATE"
         );
@@ -102,9 +88,6 @@ public class TelaExploracao extends JFrame {
             abrirTelaCombate();
         });
 
-        // =====================================
-        // BOTÃO LOJA
-        // =====================================
         JButton btnLoja = criarBotao(
                 "VISITAR LOJA"
         );
@@ -117,9 +100,7 @@ public class TelaExploracao extends JFrame {
             );
         });
 
-        // =====================================
-        // BOTÃO SAIR
-        // =====================================
+
         JButton btnSair = criarBotao(
                 "SAIR"
         );
@@ -151,9 +132,6 @@ public class TelaExploracao extends JFrame {
         add(painelPrincipal);
     }
 
-    // =====================================
-    // BOTÃO PADRÃO
-    // =====================================
     private JButton criarBotao(
             String texto
     ) {
@@ -200,9 +178,6 @@ public class TelaExploracao extends JFrame {
         return botao;
     }
 
-    // =====================================
-    // ABRIR COMBATE
-    // =====================================
     private void abrirTelaCombate() {
 
         // Remove conteúdo antigo
