@@ -51,7 +51,6 @@ public class PainelExploracao extends JPanel {
 
     /**
      * Método para atualizar a posição do jogador e forçar a troca da imagem na tela.
-     * Use isso quando adicionar os Listeners do teclado futuramente.
      */
     public void atualizarPosicao(int novaLinha, int novaColuna) {
         if (novaLinha >= 0 && novaLinha < 9 && novaColuna >= 0 && novaColuna < 5) {
