@@ -1,51 +1,219 @@
 package br.edu.ifgoiano.jogo.ui;
 
-import br.edu.ifgoiano.jogo.entidades.Masmorra;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
-/**
- * Interface grafica da masmorra, exibindo as salas disponiveis para navegacao.
- */
 public class TelaExploracao extends JFrame {
 
-    private Masmorra masmorra = new Masmorra();
+    // =====================================
+    // PAINEL PRINCIPAL
+    // =====================================
+    private JPanel painelPrincipal;
 
     public TelaExploracao() {
-        Dimension tamanhoTela = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(tamanhoTela.width, tamanhoTela.height);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setTitle("Dungeon Crawler");
+
+        setSize(1600, 900);
+
+        setDefaultCloseOperation(
+                JFrame.EXIT_ON_CLOSE
+        );
+
         setLocationRelativeTo(null);
-        setTitle("Exploração da Masmorra");
 
-        PainelExploracao painelExploracao = new PainelExploracao(this.masmorra);
-        add(painelExploracao);
-        setFocusable(true);
-        requestFocusInWindow();
+        setResizable(false);
 
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_W:
-                        painelExploracao.mover(-1, 0); // Sobe
-                        break;
-                    case KeyEvent.VK_S:
-                        painelExploracao.mover(1, 0);  // Desce
-                        break;
-                    case KeyEvent.VK_A:
-                        painelExploracao.mover(0, -1); // Esquerda
-                        break;
-                    case KeyEvent.VK_D:
-                        painelExploracao.mover(0, 1);  // Direita
-                        break;
-                }
-            }
-        });
+        criarInterface();
 
         setVisible(true);
+    }
+
+    // =====================================
+    // INTERFACE
+    // =====================================
+    private void criarInterface() {
+
+        painelPrincipal = new JPanel(
+                new BorderLayout()
+        );
+
+        painelPrincipal.setBackground(
+                Color.BLACK
+        );
+
+        // =====================================
+        // TÍTULO
+        // =====================================
+        JLabel titulo = new JLabel(
+                "DUNGEON CRAWLER",
+                SwingConstants.CENTER
+        );
+
+        titulo.setForeground(
+                new Color(180, 0, 0)
+        );
+
+        titulo.setFont(
+                new Font(
+                        "Serif",
+                        Font.BOLD,
+                        52
+                )
+        );
+
+        titulo.setBorder(
+                BorderFactory.createEmptyBorder(
+                        80,
+                        10,
+                        50,
+                        10
+                )
+        );
+
+        painelPrincipal.add(
+                titulo,
+                BorderLayout.NORTH
+        );
+
+        // =====================================
+        // CENTRO
+        // =====================================
+        JPanel painelCentro = new JPanel();
+
+        painelCentro.setOpaque(false);
+
+        painelCentro.setLayout(
+                new BoxLayout(
+                        painelCentro,
+                        BoxLayout.Y_AXIS
+                )
+        );
+
+        // =====================================
+        // BOTÃO COMBATE
+        // =====================================
+        JButton btnCombate = criarBotao(
+                "ENTRAR EM COMBATE"
+        );
+
+        btnCombate.addActionListener(e -> {
+
+            abrirTelaCombate();
+        });
+
+        // =====================================
+        // BOTÃO LOJA
+        // =====================================
+        JButton btnLoja = criarBotao(
+                "VISITAR LOJA"
+        );
+
+        btnLoja.addActionListener(e -> {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Loja ainda não implementada."
+            );
+        });
+
+        // =====================================
+        // BOTÃO SAIR
+        // =====================================
+        JButton btnSair = criarBotao(
+                "SAIR"
+        );
+
+        btnSair.addActionListener(e -> {
+
+            System.exit(0);
+        });
+
+        painelCentro.add(btnCombate);
+
+        painelCentro.add(
+                Box.createVerticalStrut(30)
+        );
+
+        painelCentro.add(btnLoja);
+
+        painelCentro.add(
+                Box.createVerticalStrut(30)
+        );
+
+        painelCentro.add(btnSair);
+
+        painelPrincipal.add(
+                painelCentro,
+                BorderLayout.CENTER
+        );
+
+        add(painelPrincipal);
+    }
+
+    // =====================================
+    // BOTÃO PADRÃO
+    // =====================================
+    private JButton criarBotao(
+            String texto
+    ) {
+
+        JButton botao = new JButton(texto);
+
+        botao.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+        botao.setPreferredSize(
+                new Dimension(350, 80)
+        );
+
+        botao.setMaximumSize(
+                new Dimension(350, 80)
+        );
+
+        botao.setBackground(
+                new Color(40, 40, 40)
+        );
+
+        botao.setForeground(
+                new Color(220, 20, 20)
+        );
+
+        botao.setFocusPainted(false);
+
+        botao.setFont(
+                new Font(
+                        "SansSerif",
+                        Font.BOLD,
+                        24
+                )
+        );
+
+        botao.setBorder(
+                BorderFactory.createLineBorder(
+                        new Color(120, 0, 0),
+                        3
+                )
+        );
+
+        return botao;
+    }
+
+    // =====================================
+    // ABRIR COMBATE
+    // =====================================
+    private void abrirTelaCombate() {
+
+        // Remove conteúdo antigo
+        getContentPane().removeAll();
+
+        // Adiciona tela combate
+        add(new TelaCombate());
+
+        // Atualiza janela
+        revalidate();
+
+        repaint();
     }
 }
