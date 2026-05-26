@@ -1,7 +1,10 @@
 package br.edu.ifgoiano.jogo.entidades;
 
-import br.edu.ifgoiano.jogo.interfaces.Usavel;
+import br.edu.ifgoiano.jogo.core.ContextoCombate;
+import br.edu.ifgoiano.jogo.enums.TipoItem;
 import br.edu.ifgoiano.jogo.interfaces.Compravel;
+import br.edu.ifgoiano.jogo.interfaces.Danificavel;
+import br.edu.ifgoiano.jogo.interfaces.Usavel;
 
 /**
  * Representa um consumivel ou reliquia que pode ser usado pelo jogador.
@@ -17,6 +20,7 @@ public class Item implements Usavel, Compravel {
     private int bonusVida;
     private int bonusAtaque;
     private int bonusDefesa;
+    private TipoItem tipo;
 
     public Item() {}
 
@@ -50,11 +54,21 @@ public class Item implements Usavel, Compravel {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+    @Override
     public int getPreco() {
         return preco;
     }
     public void setPreco(int preco) {
         this.preco = preco;
+    }
+
+    @Override
+    public void usar(ContextoCombate contexto, Danificavel alvo) {
+        if (contexto != null && contexto.getJogador() != null) {
+            contexto.getJogador().curar(this.bonusVida);
+            contexto.getJogador().setAtaque(contexto.getJogador().getAtaque() + this.bonusAtaque);
+            contexto.getJogador().setDefesa(contexto.getJogador().getDefesa() + this.bonusDefesa);
+        }
     }
     public boolean isConsumivel() {
         return consumivel;
@@ -92,4 +106,7 @@ public class Item implements Usavel, Compravel {
     public void setBonusDefesa(int bonusDefesa) {
         this.bonusDefesa = bonusDefesa;
     }
+
+    public TipoItem getTipo() { return tipo; }
+    public void setTipo(TipoItem tipo) { this.tipo = tipo; }
 }

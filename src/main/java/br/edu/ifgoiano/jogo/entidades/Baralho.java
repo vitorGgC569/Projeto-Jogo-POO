@@ -38,10 +38,32 @@ public class Baralho {
     public void setEmbaralhado(boolean embaralhado) {
         this.embaralhado = embaralhado;
     }
-    public List<Carta> getcartas() {
+    public List<Carta> getCartas() {
         return baralho;
     }
-    public void setcartas(List<Carta> cartas) {
+    public void setCartas(List<Carta> cartas) {
         this.baralho = cartas;
+    }
+
+    public void embaralhar() {
+        java.util.Collections.shuffle(this.baralho);
+        this.embaralhado = true;
+    }
+
+    /**
+     * Remove e retorna a primeira carta do topo do baralho.
+     * @return a primeira carta, ou null se o baralho está vazio
+     */
+    public Carta comprar() {
+        if (this.baralho == null || this.baralho.isEmpty()) return null;
+        return this.baralho.remove(0);
+    }
+
+    public boolean estaVazio() {
+        return this.baralho == null || this.baralho.isEmpty();
+    }
+
+    public void adicionarCarta(Carta carta) {
+        if (this.baralho != null) this.baralho.add(carta);
     }
 }

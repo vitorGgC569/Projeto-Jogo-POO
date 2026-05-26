@@ -1,5 +1,8 @@
 package br.edu.ifgoiano.jogo.entidades;
 
+import br.edu.ifgoiano.jogo.core.ContextoCombate;
+import br.edu.ifgoiano.jogo.interfaces.Curavel;
+import br.edu.ifgoiano.jogo.interfaces.Danificavel;
 import br.edu.ifgoiano.jogo.interfaces.Efeito;
 
 /**
@@ -9,24 +12,22 @@ public class EfeitoCura extends EfeitoBase implements Efeito {
     private int cura;
     private boolean revive;
 
-    public EfeitoCura(){}
+    public EfeitoCura() {}
 
-    public EfeitoCura(int cura, boolean revive,int dano, String nome, String descricao, int valor, int duracao, boolean permanente) {
-        super(dano, nome, descricao, valor, duracao, permanente);
+    public EfeitoCura(int cura) {
         this.cura = cura;
-        this.revive = revive;
+        this.revive = false;
     }
 
-    public int getCura() {
-        return cura;
+    @Override
+    public void aplicar(ContextoCombate contexto, Danificavel alvo) {
+        if (alvo instanceof Curavel) {
+            ((Curavel) alvo).curar(this.cura);
+        }
     }
-    public void setCura(int cura) {
-        this.cura = cura;
-    }
-    public boolean isRevive() {
-        return revive;
-    }
-    public void setRevive(boolean revive) {
-        this.revive = revive;
-    }
+
+    public int getCura() { return cura; }
+    public void setCura(int cura) { this.cura = cura; }
+    public boolean isRevive() { return revive; }
+    public void setRevive(boolean revive) { this.revive = revive; }
 }

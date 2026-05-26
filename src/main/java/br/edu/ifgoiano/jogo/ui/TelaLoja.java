@@ -2,7 +2,11 @@ package br.edu.ifgoiano.jogo.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Window;
 
+/**
+ * Tela da loja onde o jogador pode comprar cartas com moedas.
+ */
 public class TelaLoja extends JPanel {
 
     //moedas, declaradas como int, arrumar depois
@@ -152,9 +156,12 @@ public class TelaLoja extends JPanel {
                 new Dimension(220, 50)
         );
 
-        btnSair.addActionListener(e ->
-                System.exit(0)
-        );
+        btnSair.addActionListener(e -> {
+            Window w = SwingUtilities.getWindowAncestor(this);
+            if (w != null) {
+                w.dispose();
+            }
+        });
 
         JPanel painelSul = new JPanel();
 

@@ -1,5 +1,7 @@
 package br.edu.ifgoiano.jogo.entidades;
 
+import br.edu.ifgoiano.jogo.enums.AcaoInimigo;
+
 /**
  * Representa os inimigos comuns enfrentados durante a exploracao da masmorra.
  */
@@ -10,6 +12,7 @@ public class Inimigo extends Personagem {
     private boolean elite;
     private int chanceCritico;
     private int inteligencia;
+    private AcaoInimigo proximaAcao;
 
     public Inimigo(){}
 
@@ -56,5 +59,44 @@ public class Inimigo extends Personagem {
     }
     public void setInteligencia(int inteligencia) {
         this.inteligencia = inteligencia;
+    }
+
+    public AcaoInimigo getProximaAcao() {
+        return proximaAcao;
+    }
+
+    public void setProximaAcao(AcaoInimigo proximaAcao) {
+        this.proximaAcao = proximaAcao;
+    }
+
+    /**
+     * Define aleatoriamente a proxima acao do inimigo com base na sua inteligencia.
+     */
+    public void definirProximaAcao() {
+        int roll = new java.util.Random().nextInt(100);
+        if (roll < this.getChanceCritico()) {
+            this.proximaAcao = AcaoInimigo.ATAQUE_CRITICO;
+        } else if (roll < 60) {
+            this.proximaAcao = AcaoInimigo.ATAQUE;
+        } else if (roll < 75) {
+            this.proximaAcao = AcaoInimigo.DEFESA;
+        } else {
+            this.proximaAcao = AcaoInimigo.BUFF;
+        }
+    }
+
+    /**
+     * Executa a acao definida pelo inimigo.
+     */
+    public void executarAcao() {
+        if (this.proximaAcao != null) {
+            switch (this.proximaAcao) {
+                case ATAQUE:
+                case ATAQUE_CRITICO:
+                case DEFESA:
+                case BUFF:
+                    break;
+            }
+        }
     }
 }

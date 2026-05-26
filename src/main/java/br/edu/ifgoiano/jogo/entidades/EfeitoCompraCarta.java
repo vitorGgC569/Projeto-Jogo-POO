@@ -1,5 +1,7 @@
 package br.edu.ifgoiano.jogo.entidades;
 
+import br.edu.ifgoiano.jogo.core.ContextoCombate;
+import br.edu.ifgoiano.jogo.interfaces.Danificavel;
 import br.edu.ifgoiano.jogo.interfaces.Efeito;
 
 /**
@@ -8,16 +10,23 @@ import br.edu.ifgoiano.jogo.interfaces.Efeito;
 public class EfeitoCompraCarta extends EfeitoBase implements Efeito {
     private int quantidadeCompra;
 
-    public EfeitoCompraCarta(){}
+    public EfeitoCompraCarta() {}
 
-    public EfeitoCompraCarta(int quantidadeCompra,int dano, String nome, String descricao, int valor, int duracao, boolean permanente) {
-        super(dano, nome, descricao, valor, duracao, permanente);
+    public EfeitoCompraCarta(int quantidadeCompra) {
         this.quantidadeCompra = quantidadeCompra;
     }
-    public int getQuantidadeCompra() {
-        return quantidadeCompra;
+
+    @Override
+    public void aplicar(ContextoCombate contexto, Danificavel alvo) {
+        if (contexto == null || contexto.getJogador() == null) return;
+        for (int i = 0; i < quantidadeCompra; i++) {
+            Carta carta = contexto.getJogador().getBaralho().comprar();
+            if (carta != null) {
+                contexto.getJogador().getMao().adicionarCarta(carta);
+            }
+        }
     }
-    public void setQuantidadeCompra(int quantidadeCompra) {
-        this.quantidadeCompra = quantidadeCompra;
-    }
+
+    public int getQuantidadeCompra() { return quantidadeCompra; }
+    public void setQuantidadeCompra(int q) { this.quantidadeCompra = q; }
 }

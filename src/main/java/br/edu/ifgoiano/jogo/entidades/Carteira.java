@@ -34,4 +34,20 @@ public class Carteira {
     public void setMoedasGastas(int moedasGastas) {
         this.moedasGastas = moedasGastas;
     }
+
+    public void adicionar(int valor) {
+        if (valor > 0) {
+            this.moedas += valor;
+            this.moedasTotaisGanhos += valor;
+        }
+    }
+
+    public boolean gastar(int valor) {
+        if (valor > 0 && this.moedas >= valor) {
+            this.moedas -= valor;
+            this.moedasGastas += valor;
+            return true;
+        }
+        return false;
+    }
 }

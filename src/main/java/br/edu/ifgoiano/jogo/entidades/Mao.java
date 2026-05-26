@@ -15,10 +15,10 @@ public class Mao {
         this.mao = cartas;
         this.limiteCartas = limiteCartas;
     }
-    public List<Carta> getcartas() {
+    public List<Carta> getCartas() {
         return mao;
     }
-    public void setcartas(List<Carta> cartas) {
+    public void setCartas(List<Carta> cartas) {
         this.mao = cartas;
     }
     public int getLimiteCartas() {
@@ -26,5 +26,17 @@ public class Mao {
     }
     public void setLimiteCartas(int limiteCartas) {
         this.limiteCartas = limiteCartas;
+    }
+
+    public boolean estaCheia() {
+        return this.mao != null && this.mao.size() >= this.limiteCartas;
+    }
+
+    public void adicionarCarta(Carta carta) {
+        if (this.mao != null && !estaCheia()) this.mao.add(carta);
+    }
+
+    public boolean removerCarta(Carta carta) {
+        return this.mao != null && this.mao.remove(carta);
     }
 }

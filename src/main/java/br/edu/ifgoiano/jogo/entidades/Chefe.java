@@ -33,4 +33,23 @@ public class Chefe extends Inimigo {
     public void setModoFuria(boolean modoFuria) {
         this.modoFuria = modoFuria;
     }
+
+    /**
+     * Ativa o modo furia quando a vida cai abaixo de 30% da vida maxima.
+     */
+    public void verificarFuria() {
+        if (getVida() > 0 && getVidaMaxima() > 0) {
+            double percentualVida = (double) getVida() / getVidaMaxima();
+            if (percentualVida < 0.30 && !this.modoFuria) {
+                this.modoFuria = true;
+            }
+        }
+    }
+
+    /**
+     * Avanca para a proxima fase do chefe.
+     */
+    public void avancarFase() {
+        this.fase++;
+    }
 }

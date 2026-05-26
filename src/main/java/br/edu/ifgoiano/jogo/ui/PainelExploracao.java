@@ -2,12 +2,14 @@ package br.edu.ifgoiano.jogo.ui;
 
 import br.edu.ifgoiano.jogo.entidades.Masmorra;
 import br.edu.ifgoiano.jogo.entidades.Regiao;
+import br.edu.ifgoiano.jogo.enums.TipoRegiao;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * Painel responsável por renderizar e atualizar a tela em que o jogador está
+ * Painel responsável por renderizar e atualizar a tela em que o jogador está.
+ * Gerencia a posição do jogador no mapa e impede colisão com paredes.
  */
 public class PainelExploracao extends JPanel {
 
@@ -64,11 +66,13 @@ public class PainelExploracao extends JPanel {
         int novaLinha = this.playerLinha + deltaLinha;
         int novaColuna = this.playerColuna + deltaColuna;
 
-        // Verifica se a nova posição está dentro do limite do mapa
         if (novaLinha >= 0 && novaLinha < 9 && novaColuna >= 0 && novaColuna < 5) {
+            Regiao novaRegiao = masmorra.getRegiao(novaLinha, novaColuna);
+            if (novaRegiao == null || novaRegiao.getTipoRegiao() == TipoRegiao.PAREDE) {
+                return;
+            }
             this.playerLinha = novaLinha;
             this.playerColuna = novaColuna;
-            // desenha a tela da nova sala
             repaint();
         }
     }

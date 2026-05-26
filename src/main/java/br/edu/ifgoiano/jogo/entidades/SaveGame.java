@@ -39,19 +39,19 @@ public class SaveGame {
     public void setTempoJogado(int tempoJogado) {
         this.tempoJogado = tempoJogado;
     }
-    public Jogador getjogador() {
+    public Jogador getJogador() {
         return jogador;
     }
-    public void setjogador(Jogador jogador) {
+    public void setJogador(Jogador jogador) {
         this.jogador = jogador;
     }
-    public Masmorra getmasmorra() {
+    public Masmorra getMasmorra() {
         return masmorra;
     }
-    public void setmasmorra(Masmorra masmorra) {
+    public void setMasmorra(Masmorra masmorra) {
         this.masmorra = masmorra;
     }
-    public boolean getSaveAutomatico() {
+    public boolean isSaveAutomatico() {
         return saveAutomatico;
     }
     public void setSaveAutomatico(boolean saveAutomatico) {

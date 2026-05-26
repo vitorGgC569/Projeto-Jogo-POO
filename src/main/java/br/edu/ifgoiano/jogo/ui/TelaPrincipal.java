@@ -144,12 +144,11 @@ public class TelaPrincipal extends JFrame {
         JButton btnNovoJogo =
                 criarBotao("Novo Jogo");
 
-        btnNovoJogo.addActionListener(e ->
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Iniciando novo jogo..."
-                )
-        );
+        btnNovoJogo.addActionListener(e -> {
+            dispose();
+            TelaExploracao telaExploracao = new TelaExploracao();
+            telaExploracao.setVisible(true);
+        });
 
         JButton btnContinuar =
                 criarBotao("Continuar");
@@ -157,7 +156,7 @@ public class TelaPrincipal extends JFrame {
         btnContinuar.addActionListener(e ->
                 JOptionPane.showMessageDialog(
                         this,
-                        "Carregando save..."
+                        "Sistema de save ainda nao implementado."
                 )
         );
 

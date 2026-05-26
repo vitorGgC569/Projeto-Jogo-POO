@@ -21,6 +21,7 @@ public class Jogador extends Personagem {
 
     public Jogador(){}
     public Jogador(int ouro, int chaves, int pontuacao,int salasExploradas,int inimigosDerrotados,int cartasJogadas,int moedasColetadas,int pocoes, int nivelMasmorra, Baralho baralho, Mao mao, PilhaDescarte pilhaDescarte, Carteira carteira) {
+        this.ouro = ouro;
         this.chaves = chaves;
         this.pontuacao = pontuacao;
         this.salasExploradas = salasExploradas;
