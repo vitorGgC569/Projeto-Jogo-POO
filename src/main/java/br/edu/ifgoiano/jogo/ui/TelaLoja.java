@@ -5,91 +5,109 @@ import java.awt.*;
 
 public class TelaLoja extends JPanel {
 
-    //moedas, declaradas como int, arrumar depois
-    private int moedas = 500;
+    private int moedas = 100;
 
     private JLabel lblMoedas;
 
-    public TelaLoja() {
+    private JPanel painelCartas;
+
+    private CardLayout cardLayout;
+
+    private JPanel painelPrincipal;
+
+    public TelaLoja(
+            CardLayout cardLayout,
+            JPanel painelPrincipal
+    ) {
+
+        this.cardLayout = cardLayout;
+
+        this.painelPrincipal = painelPrincipal;
 
         setLayout(new BorderLayout());
 
-        setBackground(new Color(20, 20, 20));
+        setBackground(Color.BLACK);
 
+        criarInterface();
+    }
 
-        JPanel painelTopo = new JPanel(
+    private void criarInterface() {
+
+        JPanel topo = new JPanel(
                 new BorderLayout()
         );
 
-        painelTopo.setOpaque(false);
-
-        //titulo
-        JLabel titulo = new JLabel(
-                "um forastero re4",
-                SwingConstants.CENTER
+        topo.setBackground(
+                Color.BLACK
         );
 
-        titulo.setFont(
-                new Font("Serif", Font.BOLD, 42)
+        JLabel titulo = new JLabel(
+                "LOJA",
+                SwingConstants.CENTER
         );
 
         titulo.setForeground(
                 new Color(220, 20, 20)
         );
 
+        titulo.setFont(
+                new Font(
+                        "Serif",
+                        Font.BOLD,
+                        48
+                )
+        );
+
         titulo.setBorder(
                 BorderFactory.createEmptyBorder(
                         30,
                         10,
-                        10,
+                        30,
                         10
                 )
         );
 
-        //visual moedas
         lblMoedas = new JLabel(
-                "Moedas: " + moedas
+                "MOEDAS: " + moedas
+        );
+
+        lblMoedas.setForeground(
+                Color.WHITE
         );
 
         lblMoedas.setFont(
                 new Font(
                         "SansSerif",
                         Font.BOLD,
-                        20
+                        22
                 )
-        );
-
-        lblMoedas.setForeground(
-                new Color(255, 215, 0)
         );
 
         lblMoedas.setBorder(
                 BorderFactory.createEmptyBorder(
+                        0,
                         20,
-                        20,
-                        10,
+                        0,
                         20
                 )
         );
 
-        painelTopo.add(
+        topo.add(
                 titulo,
                 BorderLayout.CENTER
         );
 
-        painelTopo.add(
+        topo.add(
                 lblMoedas,
                 BorderLayout.EAST
         );
 
-        add(painelTopo, BorderLayout.NORTH);
+        add(
+                topo,
+                BorderLayout.NORTH
+        );
 
-        // vai mostrar as cartas
-        JPanel painelCartas = new JPanel();
-
-        painelCartas.setOpaque(false);
-
-        painelCartas.setLayout(
+        painelCartas = new JPanel(
                 new FlowLayout(
                         FlowLayout.CENTER,
                         40,
@@ -97,92 +115,106 @@ public class TelaLoja extends JPanel {
                 )
         );
 
-        painelCartas.add(
-                criarCarta(
-                        "Carta Flamejante",
-                        100
-                )
+        painelCartas.setBackground(
+                Color.BLACK
         );
 
         painelCartas.add(
                 criarCarta(
-                        "Carta Sombria",
-                        150
+                        "ESPADA SOMBRIA",
+                        30
                 )
         );
 
         painelCartas.add(
                 criarCarta(
-                        "Carta Lendária",
-                        250
+                        "ESCUDO REAL",
+                        40
                 )
         );
 
-        add(painelCartas, BorderLayout.CENTER);
-
-        //sair
-        JButton btnSair = new JButton("Sair");
-
-        btnSair.setFont(
-                new Font(
-                        "SansSerif",
-                        Font.BOLD,
-                        18
+        painelCartas.add(
+                criarCarta(
+                        "MAGIA ARCANA",
+                        50
                 )
         );
 
-        btnSair.setBackground(
-                new Color(30, 30, 30)
+        add(
+                painelCartas,
+                BorderLayout.CENTER
         );
 
-        btnSair.setForeground(
+        JPanel inferior = new JPanel();
+
+        inferior.setBackground(
+                Color.BLACK
+        );
+
+        JButton btnVoltar = new JButton(
+                "VOLTAR"
+        );
+
+        btnVoltar.setPreferredSize(
+                new Dimension(300, 60)
+        );
+
+        btnVoltar.setBackground(
+                new Color(40, 40, 40)
+        );
+
+        btnVoltar.setForeground(
                 new Color(220, 20, 20)
         );
 
-        btnSair.setFocusPainted(false);
-
-        btnSair.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(120, 0, 0),
-                        2
+        btnVoltar.setFont(
+                new Font(
+                        "SansSerif",
+                        Font.BOLD,
+                        24
                 )
         );
 
-        btnSair.setPreferredSize(
-                new Dimension(220, 50)
+        btnVoltar.setFocusPainted(false);
+
+        btnVoltar.setBorder(
+                BorderFactory.createLineBorder(
+                        new Color(120, 0, 0),
+                        3
+                )
         );
 
-        btnSair.addActionListener(e ->
-                System.exit(0)
+        btnVoltar.addActionListener(e -> {
+
+            cardLayout.show(
+                    painelPrincipal,
+                    "MENU"
+            );
+        });
+
+        inferior.add(btnVoltar);
+
+        add(
+                inferior,
+                BorderLayout.SOUTH
         );
-
-        JPanel painelSul = new JPanel();
-
-        painelSul.setOpaque(false);
-
-        painelSul.add(btnSair);
-
-        add(painelSul, BorderLayout.SOUTH);
     }
 
-    // cartas
-    private JButton criarCarta(
+    private JPanel criarCarta(
             String nome,
             int preco
     ) {
 
-        JButton carta = new JButton();
-
-        carta.setPreferredSize(
-                new Dimension(200, 320)
-        );
-
-        carta.setLayout(
+        JPanel carta = new JPanel(
                 new BorderLayout()
         );
 
+        carta.setPreferredSize(
+                new Dimension(240, 380)
+        );
+
         carta.setBackground(
-                new Color(45, 45, 45)
+                new Color(25, 25, 25)
         );
 
         carta.setBorder(
@@ -192,23 +224,58 @@ public class TelaLoja extends JPanel {
                 )
         );
 
-        carta.setFocusPainted(false);
-
-        // place holder das cartas que vão aparecer na loja
-        JLabel imagem = new JLabel(
-                "IMAGEM",
+        JLabel nomeCarta = new JLabel(
+                nome,
                 SwingConstants.CENTER
         );
+
+        nomeCarta.setForeground(
+                new Color(220, 20, 20)
+        );
+
+        nomeCarta.setFont(
+                new Font(
+                        "Serif",
+                        Font.BOLD,
+                        24
+                )
+        );
+
+        nomeCarta.setBorder(
+                BorderFactory.createEmptyBorder(
+                        15,
+                        10,
+                        15,
+                        10
+                )
+        );
+
+        JPanel imagem = new JPanel();
 
         imagem.setPreferredSize(
                 new Dimension(180, 220)
         );
 
-        imagem.setForeground(
-                new Color(220, 20, 20)
+        imagem.setBackground(
+                new Color(50, 50, 50)
         );
 
-        imagem.setFont(
+        imagem.setBorder(
+                BorderFactory.createLineBorder(
+                        Color.DARK_GRAY,
+                        2
+                )
+        );
+
+        JLabel txtImagem = new JLabel(
+                "IMAGEM"
+        );
+
+        txtImagem.setForeground(
+                Color.WHITE
+        );
+
+        txtImagem.setFont(
                 new Font(
                         "SansSerif",
                         Font.BOLD,
@@ -216,22 +283,60 @@ public class TelaLoja extends JPanel {
                 )
         );
 
-        imagem.setBorder(
-                BorderFactory.createLineBorder(
-                        new Color(80, 80, 80),
-                        2
+        imagem.add(txtImagem);
+
+        JPanel inferior = new JPanel();
+
+        inferior.setBackground(
+                new Color(25, 25, 25)
+        );
+
+        inferior.setLayout(
+                new BoxLayout(
+                        inferior,
+                        BoxLayout.Y_AXIS
                 )
         );
 
-        // nome das cartas
-        JLabel lblNome = new JLabel(
-                nome,
-                SwingConstants.CENTER
+        JLabel lblPreco = new JLabel(
+                "PREÇO: " + preco
         );
 
-        lblNome.setForeground(Color.WHITE);
+        lblPreco.setForeground(
+                Color.WHITE
+        );
 
-        lblNome.setFont(
+        lblPreco.setFont(
+                new Font(
+                        "SansSerif",
+                        Font.BOLD,
+                        22
+                )
+        );
+
+        lblPreco.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+        JButton btnComprar = new JButton(
+                "COMPRAR"
+        );
+
+        btnComprar.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+        btnComprar.setBackground(
+                new Color(40, 40, 40)
+        );
+
+        btnComprar.setForeground(
+                new Color(220, 20, 20)
+        );
+
+        btnComprar.setFocusPainted(false);
+
+        btnComprar.setFont(
                 new Font(
                         "SansSerif",
                         Font.BOLD,
@@ -239,79 +344,69 @@ public class TelaLoja extends JPanel {
                 )
         );
 
-        //preço das cartas
-        JLabel lblPreco = new JLabel(
-                preco + " moedas",
-                SwingConstants.CENTER
-        );
-
-        lblPreco.setForeground(
-                new Color(255, 215, 0)
-        );
-
-        lblPreco.setFont(
-                new Font(
-                        "SansSerif",
-                        Font.BOLD,
-                        16
+        btnComprar.setBorder(
+                BorderFactory.createLineBorder(
+                        new Color(120, 0, 0),
+                        2
                 )
         );
 
-        //info
-        JPanel painelInfo = new JPanel();
+        btnComprar.addActionListener(e -> {
 
-        painelInfo.setLayout(
-                new GridLayout(2, 1)
-        );
-
-        painelInfo.setOpaque(false);
-
-        painelInfo.add(lblNome);
-
-        painelInfo.add(lblPreco);
-
-        carta.add(imagem, BorderLayout.CENTER);
-
-        carta.add(painelInfo, BorderLayout.SOUTH);
-
-        //botão compra
-        carta.addActionListener(e -> {
-
-            // Verifica moedas
             if (moedas >= preco) {
 
                 moedas -= preco;
 
-                atualizarMoedas();
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        nome + " comprada!"
+                lblMoedas.setText(
+                        "MOEDAS: " + moedas
                 );
 
-                // após comprar, a carta desaparece
-                carta.setVisible(false);
+                painelCartas.remove(carta);
 
-                repaint();
-                revalidate();
+                painelCartas.revalidate();
+
+                painelCartas.repaint();
 
             } else {
 
                 JOptionPane.showMessageDialog(
                         this,
-                        "Moedas insuficientes!"
+                        "Moedas insuficientes."
                 );
             }
         });
 
-        return carta;
-    }
-
-    // atualizar preço das moedas
-    private void atualizarMoedas() {
-
-        lblMoedas.setText(
-                "Moedas: " + moedas
+        inferior.add(
+                Box.createVerticalStrut(10)
         );
+
+        inferior.add(lblPreco);
+
+        inferior.add(
+                Box.createVerticalStrut(20)
+        );
+
+        inferior.add(btnComprar);
+
+        inferior.add(
+                Box.createVerticalStrut(15)
+        );
+
+        carta.add(
+                nomeCarta,
+                BorderLayout.NORTH
+        );
+
+        carta.add(
+                imagem,
+                BorderLayout.CENTER
+        );
+
+        carta.add(
+                inferior,
+                BorderLayout.SOUTH
+        );
+
+        return carta;
     }
 }

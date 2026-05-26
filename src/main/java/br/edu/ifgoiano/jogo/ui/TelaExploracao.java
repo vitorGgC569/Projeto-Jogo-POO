@@ -5,6 +5,8 @@ import java.awt.*;
 
 public class TelaExploracao extends JFrame {
 
+    private CardLayout cardLayout;
+
     private JPanel painelPrincipal;
 
     public TelaExploracao() {
@@ -21,18 +23,40 @@ public class TelaExploracao extends JFrame {
 
         setResizable(false);
 
-        criarInterface();
+        cardLayout = new CardLayout();
+
+        painelPrincipal = new JPanel(cardLayout);
+
+        painelPrincipal.add(
+                criarMenu(),
+                "MENU"
+        );
+
+        painelPrincipal.add(
+                new TelaLoja(
+                        cardLayout,
+                        painelPrincipal
+                ),
+                "LOJA"
+        );
+
+        painelPrincipal.add(
+                new TelaCombate(),
+                "COMBATE"
+        );
+
+        add(painelPrincipal);
 
         setVisible(true);
     }
 
-    private void criarInterface() {
+    private JPanel criarMenu() {
 
-        painelPrincipal = new JPanel(
+        JPanel painel = new JPanel(
                 new BorderLayout()
         );
 
-        painelPrincipal.setBackground(
+        painel.setBackground(
                 Color.BLACK
         );
 
@@ -62,11 +86,10 @@ public class TelaExploracao extends JFrame {
                 )
         );
 
-        painelPrincipal.add(
+        painel.add(
                 titulo,
                 BorderLayout.NORTH
         );
-
 
         JPanel painelCentro = new JPanel();
 
@@ -85,7 +108,10 @@ public class TelaExploracao extends JFrame {
 
         btnCombate.addActionListener(e -> {
 
-            abrirTelaCombate();
+            cardLayout.show(
+                    painelPrincipal,
+                    "COMBATE"
+            );
         });
 
         JButton btnLoja = criarBotao(
@@ -94,12 +120,11 @@ public class TelaExploracao extends JFrame {
 
         btnLoja.addActionListener(e -> {
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Loja ainda não implementada."
+            cardLayout.show(
+                    painelPrincipal,
+                    "LOJA"
             );
         });
-
 
         JButton btnSair = criarBotao(
                 "SAIR"
@@ -124,12 +149,12 @@ public class TelaExploracao extends JFrame {
 
         painelCentro.add(btnSair);
 
-        painelPrincipal.add(
+        painel.add(
                 painelCentro,
                 BorderLayout.CENTER
         );
 
-        add(painelPrincipal);
+        return painel;
     }
 
     private JButton criarBotao(
@@ -176,19 +201,5 @@ public class TelaExploracao extends JFrame {
         );
 
         return botao;
-    }
-
-    private void abrirTelaCombate() {
-
-        // Remove conteúdo antigo
-        getContentPane().removeAll();
-
-        // Adiciona tela combate
-        add(new TelaCombate());
-
-        // Atualiza janela
-        revalidate();
-
-        repaint();
     }
 }
