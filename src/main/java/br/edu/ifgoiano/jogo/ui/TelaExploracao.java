@@ -21,6 +21,8 @@ public class TelaExploracao extends JFrame {
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
+        setUndecorated(true);
+
         criarInterface();
 
         setVisible(true);
