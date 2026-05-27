@@ -7,16 +7,28 @@ import br.edu.ifgoiano.jogo.interfaces.Danificavel;
 import java.util.List;
 
 /**
- * Controla as regras de criacao, busca e ativacao de efeitos de cartas.
+ * Serviço responsável pelas regras de uso e busca de cartas durante o combate.
  */
 public class CartaService {
 
-    /** Aplica a carta contra um alvo dentro do contexto de combate. */
+    /**
+     * Aplica os efeitos de uma carta sobre o alvo dentro do contexto de combate atual.
+     *
+     * @param carta   a carta a ser usada
+     * @param contexto o contexto do combate em andamento, com informações do jogador e turno
+     * @param alvo    o alvo que receberá os efeitos da carta (inimigo ou jogador)
+     */
     public void aplicarCarta(Carta carta, ContextoCombate contexto, Danificavel alvo) {
         carta.usar(contexto, alvo);
     }
 
-    /** Retorna a carta com o nome informado da lista, ou null se nao encontrar. */
+    /**
+     * Busca uma carta pelo nome dentro de uma lista, ignorando diferenças de maiúsculas e minúsculas.
+     *
+     * @param cartas lista de cartas onde a busca será realizada
+     * @param nome   nome da carta a ser encontrada
+     * @return a carta encontrada, ou {@code null} caso nenhuma corresponda ao nome informado
+     */
     public Carta buscarPorNome(List<Carta> cartas, String nome) {
         return cartas.stream()
                 .filter(c -> c.getNome() != null && c.getNome().equalsIgnoreCase(nome))

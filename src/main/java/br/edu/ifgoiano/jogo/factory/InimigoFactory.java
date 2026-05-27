@@ -4,10 +4,15 @@ import br.edu.ifgoiano.jogo.entidades.Chefe;
 import br.edu.ifgoiano.jogo.entidades.Inimigo;
 
 /**
- * Fabrica para instanciacao de inimigos e chefes.
+ * Fábrica responsável por criar diferentes tipos de inimigos e chefes prontos para combate.
  */
 public class InimigoFactory {
 
+    /**
+     * Cria um esqueleto, inimigo comum de baixa dificuldade encontrado nos primeiros andares.
+     *
+     * @return inimigo do tipo esqueleto com atributos iniciais definidos
+     */
     public static Inimigo criarEsqueleto() {
         Inimigo i = new Inimigo();
         i.setNome("Esqueleto");
@@ -25,6 +30,11 @@ public class InimigoFactory {
         return i;
     }
 
+    /**
+     * Cria um morcego, inimigo ágil de baixo dano mas com alta chance de acerto crítico.
+     *
+     * @return inimigo do tipo morcego com atributos iniciais definidos
+     */
     public static Inimigo criarMorcego() {
         Inimigo i = new Inimigo();
         i.setNome("Morcego");
@@ -42,6 +52,12 @@ public class InimigoFactory {
         return i;
     }
 
+    /**
+     * Cria um esqueleto elite, versão mais forte e resistente do esqueleto comum,
+     * com atributos elevados e marcado como inimigo elite.
+     *
+     * @return inimigo elite do tipo esqueleto com atributos reforçados
+     */
     public static Inimigo criarEsqueletoElite() {
         Inimigo i = criarEsqueleto();
         i.setNome("Esqueleto Elite");
@@ -55,6 +71,12 @@ public class InimigoFactory {
         return i;
     }
 
+    /**
+     * Cria o Rei dos Mortos, chefe principal da masmorra com alto dano,
+     * habilidade especial e modo de fúria disponível.
+     *
+     * @return chefe totalmente configurado para o encontro final
+     */
     public static Chefe criarChefe() {
         Chefe chefe = new Chefe();
         chefe.setNome("Rei dos Mortos");

@@ -4,6 +4,11 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
+/**
+ * Painel de combate do jogo.
+ * Exibe o nome e a barra de vida do inimigo, o status do jogador
+ * (vida, escudo, pilha e descarte), as cartas na mão e o botão de finalizar turno.
+ */
 public class TelaCombate extends JPanel {
 
 
@@ -20,6 +25,9 @@ public class TelaCombate extends JPanel {
 
     private JButton btnFinalizarTurno;
 
+    /**
+     * Cria o painel de combate e monta toda a interface gráfica.
+     */
     public TelaCombate() {
 
         setLayout(new BorderLayout());
@@ -545,34 +553,74 @@ public class TelaCombate extends JPanel {
     }
 
 
+    /**
+     * Retorna o rótulo que exibe a vida atual do jogador.
+     *
+     * @return label de vida do jogador
+     */
     public JLabel getLblVida() {
         return lblVida;
     }
 
+    /**
+     * Retorna o rótulo que exibe o escudo atual do jogador.
+     *
+     * @return label de escudo do jogador
+     */
     public JLabel getLblEscudo() {
         return lblEscudo;
     }
 
+    /**
+     * Retorna o rótulo que exibe a quantidade de cartas na pilha do jogador.
+     *
+     * @return label da pilha de cartas
+     */
     public JLabel getLblBaralho() {
         return lblBaralho;
     }
 
+    /**
+     * Retorna o rótulo que exibe a quantidade de cartas no descarte.
+     *
+     * @return label da pilha de descarte
+     */
     public JLabel getLblDescarte() {
         return lblDescarte;
     }
 
+    /**
+     * Retorna o rótulo com o nome do inimigo em combate.
+     *
+     * @return label do nome do inimigo
+     */
     public JLabel getLblNomeInimigo() {
         return lblNomeInimigo;
     }
 
+    /**
+     * Retorna a barra de progresso que representa a vida do inimigo.
+     *
+     * @return barra de vida do inimigo
+     */
     public JProgressBar getBarraVidaInimigo() {
         return barraVidaInimigo;
     }
 
+    /**
+     * Retorna o painel que contém as cartas na mão do jogador.
+     *
+     * @return painel da mão do jogador
+     */
     public JPanel getPainelMao() {
         return painelMao;
     }
 
+    /**
+     * Retorna o botão para finalizar o turno do jogador.
+     *
+     * @return botão de finalizar turno
+     */
     public JButton getBtnFinalizarTurno() {
         return btnFinalizarTurno;
     }

@@ -3,10 +3,19 @@ package br.edu.ifgoiano.jogo.ui;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Tela do menu principal do jogo.
+ * Exibe o título "DUNGEON CRAWLER", o fundo temático e os botões
+ * de Novo Jogo, Continuar e Sair.
+ * Inicia em tela cheia sem decoração de janela.
+ */
 public class TelaPrincipal extends JFrame {
 
     private Image imagemFundo;
 
+    /**
+     * Cria e exibe a tela do menu principal em tela cheia.
+     */
     public TelaPrincipal() {
 
         configurarJanela();

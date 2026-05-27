@@ -1,32 +1,38 @@
 package br.edu.ifgoiano.jogo.entidades;
 
+import br.edu.ifgoiano.jogo.enums.Direcao;
 import br.edu.ifgoiano.jogo.enums.TipoRegiao;
 import br.edu.ifgoiano.jogo.util.PathUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.EnumMap;
+import java.util.Map;
 
-/**
- * Responsável por armazenar o tipo da do cenário e a imagem que será exibida.
- */
 public class Regiao {
-    private Image image;
+
+    private Map<Direcao, Image> imagens;
     private TipoRegiao tipoRegiao;
 
-    public Regiao (){}
+    public Regiao() {}
 
-    public Regiao(TipoRegiao tipoRegiao){
+    public Regiao(TipoRegiao tipoRegiao) {
         this.tipoRegiao = tipoRegiao;
-        //Consulta a imagem por tipo de sala
-        this.image = new ImageIcon(PathUtils.obterPathPorTipo(this.tipoRegiao)).getImage();
+        this.imagens = new EnumMap<>(Direcao.class);
+        for (Direcao dir : Direcao.values()) {
+            String path = PathUtils.obterPathPorTipo(tipoRegiao, dir);
+            this.imagens.put(dir, new ImageIcon(path).getImage());
+        }
     }
 
+    public Image getImagem(Direcao direcao) {
+        if (imagens == null) return null;
+        return imagens.get(direcao);
+    }
+
+    // Compatibilidade: retorna imagem voltada para NORTE
     public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
+        return getImagem(Direcao.NORTE);
     }
 
     public TipoRegiao getTipoRegiao() {
@@ -36,5 +42,4 @@ public class Regiao {
     public void setTipoRegiao(TipoRegiao tipoRegiao) {
         this.tipoRegiao = tipoRegiao;
     }
-
 }

@@ -5,7 +5,8 @@ import java.awt.*;
 import java.awt.Window;
 
 /**
- * Tela da loja onde o jogador pode comprar cartas com moedas.
+ * Painel da loja onde o jogador pode comprar cartas com moedas.
+ * Exibe as cartas disponíveis, o saldo de moedas e o botão para sair da loja.
  */
 public class TelaLoja extends JPanel {
 
@@ -14,6 +15,9 @@ public class TelaLoja extends JPanel {
 
     private JLabel lblMoedas;
 
+    /**
+     * Cria o painel da loja e monta toda a interface gráfica com as cartas disponíveis.
+     */
     public TelaLoja() {
 
         setLayout(new BorderLayout());
