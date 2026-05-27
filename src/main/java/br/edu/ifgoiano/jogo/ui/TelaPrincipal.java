@@ -22,6 +22,8 @@ public class TelaPrincipal extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
          setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        setUndecorated(true);
     }
 
 
