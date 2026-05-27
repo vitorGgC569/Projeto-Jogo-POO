@@ -14,15 +14,12 @@ public class TelaExploracao extends JFrame {
 
         setTitle("Dungeon Crawler");
 
-        setSize(1600, 900);
 
         setDefaultCloseOperation(
                 JFrame.EXIT_ON_CLOSE
         );
 
-        setLocationRelativeTo(null);
-
-        setResizable(false);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         criarInterface();
 
