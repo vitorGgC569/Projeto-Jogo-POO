@@ -19,13 +19,9 @@ public class TelaPrincipal extends JFrame {
 
         setTitle("Dungeon Crawler");
 
-        setSize(1000, 700);
-
-        setLocationRelativeTo(null);
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        setResizable(false);
+         setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
 
