@@ -4,30 +4,23 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-/**
- * Painel de combate do jogo.
- * Exibe o nome e a barra de vida do inimigo, o status do jogador
- * (vida, escudo, pilha e descarte), as cartas na mão e o botão de finalizar turno.
- */
 public class TelaCombate extends JPanel {
-
 
     private JLabel lblVida;
     private JLabel lblEscudo;
     private JLabel lblBaralho;
     private JLabel lblDescarte;
 
-    private JLabel lblNomeInimigo;
+    private JLabel lblNivel;
+    private JProgressBar barraXp;
 
+    private JLabel lblNomeInimigo;
     private JProgressBar barraVidaInimigo;
 
     private JPanel painelMao;
 
     private JButton btnFinalizarTurno;
 
-    /**
-     * Cria o painel de combate e monta toda a interface gráfica.
-     */
     public TelaCombate() {
 
         setLayout(new BorderLayout());
@@ -37,9 +30,7 @@ public class TelaCombate extends JPanel {
         criarInterface();
     }
 
-
     private void criarInterface() {
-
 
         JPanel painelTopo = new JPanel(
                 new BorderLayout()
@@ -119,7 +110,6 @@ public class TelaCombate extends JPanel {
 
         painelCentro.setOpaque(false);
 
-        //status do player
         JPanel painelStatus = new JPanel();
 
         painelStatus.setOpaque(false);
@@ -175,9 +165,8 @@ public class TelaCombate extends JPanel {
                 BorderLayout.WEST
         );
 
-        // parte do inimigo
         JLabel inimigo = new JLabel(
-                "caveirão satanico",
+                "CAVEIRÃO SATANICO",
                 SwingConstants.CENTER
         );
 
@@ -207,7 +196,6 @@ public class TelaCombate extends JPanel {
                 BorderLayout.CENTER
         );
 
-       //descarte que fica na direita
         JPanel painelDireita = new JPanel();
 
         painelDireita.setOpaque(false);
@@ -287,6 +275,70 @@ public class TelaCombate extends JPanel {
                 Component.CENTER_ALIGNMENT
         );
 
+        JLabel tituloNivel = new JLabel(
+                "NÍVEL DO JOGADOR"
+        );
+
+        tituloNivel.setForeground(
+                new Color(180, 0, 0)
+        );
+
+        tituloNivel.setFont(
+                new Font(
+                        "Serif",
+                        Font.BOLD,
+                        24
+                )
+        );
+
+        tituloNivel.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+        lblNivel = new JLabel(
+                "LEVEL 7"
+        );
+
+        lblNivel.setForeground(Color.WHITE);
+
+        lblNivel.setFont(
+                new Font(
+                        "SansSerif",
+                        Font.BOLD,
+                        28
+                )
+        );
+
+        lblNivel.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+        barraXp = new JProgressBar();
+
+        barraXp.setMaximum(100);
+
+        barraXp.setValue(65);
+
+        barraXp.setStringPainted(true);
+
+        barraXp.setString("XP 65 / 100");
+
+        barraXp.setForeground(
+                new Color(0, 120, 255)
+        );
+
+        barraXp.setBackground(
+                new Color(25, 25, 25)
+        );
+
+        barraXp.setPreferredSize(
+                new Dimension(220, 30)
+        );
+
+        barraXp.setMaximumSize(
+                new Dimension(220, 30)
+        );
+
         painelDireita.add(tituloDescarte);
 
         painelDireita.add(
@@ -300,6 +352,24 @@ public class TelaCombate extends JPanel {
         );
 
         painelDireita.add(qtdDescarte);
+
+        painelDireita.add(
+                Box.createVerticalStrut(50)
+        );
+
+        painelDireita.add(tituloNivel);
+
+        painelDireita.add(
+                Box.createVerticalStrut(15)
+        );
+
+        painelDireita.add(lblNivel);
+
+        painelDireita.add(
+                Box.createVerticalStrut(20)
+        );
+
+        painelDireita.add(barraXp);
 
         painelCentro.add(
                 painelDireita,
@@ -325,7 +395,6 @@ public class TelaCombate extends JPanel {
                         new Color(100, 0, 0)
                 )
         );
-
 
         painelMao = new JPanel(
                 new FlowLayout(
@@ -370,7 +439,6 @@ public class TelaCombate extends JPanel {
                 BorderLayout.CENTER
         );
 
-        // turno
         btnFinalizarTurno = new JButton(
                 "FINALIZAR TURNO"
         );
@@ -416,7 +484,6 @@ public class TelaCombate extends JPanel {
         add(painelInferior, BorderLayout.SOUTH);
     }
 
-
     private JLabel criarPainelStatus(
             String titulo,
             String valor
@@ -449,7 +516,6 @@ public class TelaCombate extends JPanel {
 
         return label;
     }
-
 
     private JPanel criarCarta(
             String nome,
@@ -552,75 +618,42 @@ public class TelaCombate extends JPanel {
         return carta;
     }
 
-
-    /**
-     * Retorna o rótulo que exibe a vida atual do jogador.
-     *
-     * @return label de vida do jogador
-     */
     public JLabel getLblVida() {
         return lblVida;
     }
 
-    /**
-     * Retorna o rótulo que exibe o escudo atual do jogador.
-     *
-     * @return label de escudo do jogador
-     */
     public JLabel getLblEscudo() {
         return lblEscudo;
     }
 
-    /**
-     * Retorna o rótulo que exibe a quantidade de cartas na pilha do jogador.
-     *
-     * @return label da pilha de cartas
-     */
     public JLabel getLblBaralho() {
         return lblBaralho;
     }
 
-    /**
-     * Retorna o rótulo que exibe a quantidade de cartas no descarte.
-     *
-     * @return label da pilha de descarte
-     */
     public JLabel getLblDescarte() {
         return lblDescarte;
     }
 
-    /**
-     * Retorna o rótulo com o nome do inimigo em combate.
-     *
-     * @return label do nome do inimigo
-     */
+    public JLabel getLblNivel() {
+        return lblNivel;
+    }
+
+    public JProgressBar getBarraXp() {
+        return barraXp;
+    }
+
     public JLabel getLblNomeInimigo() {
         return lblNomeInimigo;
     }
 
-    /**
-     * Retorna a barra de progresso que representa a vida do inimigo.
-     *
-     * @return barra de vida do inimigo
-     */
     public JProgressBar getBarraVidaInimigo() {
         return barraVidaInimigo;
     }
 
-    /**
-     * Retorna o painel que contém as cartas na mão do jogador.
-     *
-     * @return painel da mão do jogador
-     */
     public JPanel getPainelMao() {
         return painelMao;
     }
 
-    /**
-     * Retorna o botão para finalizar o turno do jogador.
-     *
-     * @return botão de finalizar turno
-     */
     public JButton getBtnFinalizarTurno() {
         return btnFinalizarTurno;
     }
