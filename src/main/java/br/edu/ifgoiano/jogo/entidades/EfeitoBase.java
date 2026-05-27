@@ -1,6 +1,8 @@
 package br.edu.ifgoiano.jogo.entidades;
 
-public abstract class EfeitoBase {
+import br.edu.ifgoiano.jogo.interfaces.Efeito;
+
+public abstract class EfeitoBase implements Efeito {
     private int id;
     private String nome;
     private String descricao;

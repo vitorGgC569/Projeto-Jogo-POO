@@ -32,7 +32,7 @@ public class Baralho {
     public void setQuantidadeCartas(int quantidadeCartas) {
         this.quantidadeCartas = quantidadeCartas;
     }
-    public boolean isEmbaralhado() {
+    public boolean getEmbaralhado() {
         return embaralhado;
     }
     public void setEmbaralhado(boolean embaralhado) {
