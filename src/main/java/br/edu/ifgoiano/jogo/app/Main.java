@@ -1,5 +1,6 @@
 package br.edu.ifgoiano.jogo.app;
 
+import br.edu.ifgoiano.jogo.config.DatabaseInitializer;
 import br.edu.ifgoiano.jogo.ui.TelaExploracao;
 import br.edu.ifgoiano.jogo.ui.TelaPrincipal;
 
@@ -11,6 +12,7 @@ import javax.swing.*;
 public class Main {
 
     public static void main(String[] args) {
+        DatabaseInitializer.inicializar();
 
         SwingUtilities.invokeLater(() -> {
             TelaPrincipal tela = new TelaPrincipal();
