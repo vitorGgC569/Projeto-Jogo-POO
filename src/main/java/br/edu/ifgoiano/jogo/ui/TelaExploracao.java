@@ -1,24 +1,41 @@
 package br.edu.ifgoiano.jogo.ui;
 
+import br.edu.ifgoiano.jogo.entidades.Baralho;
+import br.edu.ifgoiano.jogo.entidades.Carta;
+import br.edu.ifgoiano.jogo.entidades.Carteira;
+import br.edu.ifgoiano.jogo.entidades.Jogador;
+import br.edu.ifgoiano.jogo.entidades.Mao;
 import br.edu.ifgoiano.jogo.entidades.Masmorra;
+import br.edu.ifgoiano.jogo.entidades.PilhaDescarte;
+import br.edu.ifgoiano.jogo.factory.CartaFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tela principal de exploração da masmorra em primeira pessoa.
  * Exibe a visão do jogador via {@link PainelExploracao}, a bússola,
  * o minimapa e os botões de movimento e ação.
- * Inicia em tela cheia sem decoração de janela.
+ * Mantem um {@link Jogador} unico compartilhado entre exploracao,
+ * combate e loja para preservar carteira, baralho e progresso.
  */
 public class TelaExploracao extends JFrame {
 
     private PainelExploracao painelExploracao;
+    /** Painel principal de exploração — reutilizado ao retornar do combate. */
+    private JPanel painelPrincipal;
+
+    /** Jogador unico compartilhado entre combate, exploracao e loja. */
+    private final Jogador jogador;
 
     /**
      * Cria e exibe a tela de exploração em tela cheia.
      */
     public TelaExploracao() {
+        this.jogador = criarJogadorInicial();
+
         setTitle("Dungeon Crawler");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -28,8 +45,38 @@ public class TelaExploracao extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Cria o jogador inicial com baralho, mao, descarte e carteira.
+     * E mantido entre as telas (exploracao, combate, loja).
+     */
+    private Jogador criarJogadorInicial() {
+        List<Carta> cartas = new ArrayList<>();
+        cartas.add(CartaFactory.criarGolpe());
+        cartas.add(CartaFactory.criarGolpe());
+        cartas.add(CartaFactory.criarGolpe());
+        cartas.add(CartaFactory.criarDefesa());
+        cartas.add(CartaFactory.criarDefesa());
+        cartas.add(CartaFactory.criarCura());
+        cartas.add(CartaFactory.criarGolpeCritico());
+        cartas.add(CartaFactory.criarInvestida());
+        cartas.add(CartaFactory.criarRaiva());
+        cartas.add(CartaFactory.criarGolpeDuplo());
+
+        Jogador j = new Jogador();
+        j.setNome("Heroi");
+        j.setVida(80);           j.setVidaMaxima(80);
+        j.setEnergia(3);         j.setEnergiaMaxima(3);
+        j.setAtaque(5);          j.setDefesa(2);
+        j.setEscudo(0);          j.setNivel(1);
+        j.setBaralho(new Baralho(40, cartas.size(), false, new ArrayList<>(cartas)));
+        j.setMao(new Mao(new ArrayList<>(), 5));
+        j.setPilhaDescarte(new PilhaDescarte(new ArrayList<>()));
+        j.setCarteira(new Carteira(150, 150, 0));
+        return j;
+    }
+
     private void criarInterface() {
-        JPanel painelPrincipal = new JPanel(new BorderLayout());
+        painelPrincipal = new JPanel(new BorderLayout());
         painelPrincipal.setBackground(Color.BLACK);
 
         // Visão POV 3D — ocupa toda a área central
@@ -42,6 +89,7 @@ public class TelaExploracao extends JFrame {
         add(painelPrincipal);
 
         painelExploracao.setOnCombate(this::abrirTelaCombate);
+        painelExploracao.setOnLoja(this::abrirTelaLoja);
         painelExploracao.setFocusable(true);
         SwingUtilities.invokeLater(() -> painelExploracao.requestFocusInWindow());
     }
@@ -60,38 +108,27 @@ public class TelaExploracao extends JFrame {
         return painel;
     }
 
-    // =====================================
-    // BOTÕES DE MOVIMENTO (dungeon crawler 1ª pessoa)
-    //
-    //        [ ↑ Avançar ]
-    //  [← Virar]   [→ Virar]
-    //        [ ↓ Recuar  ]
-    // =====================================
     private JPanel criarPainelMovimento() {
         JPanel painel = new JPanel(new GridBagLayout());
         painel.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(4, 4, 4, 4);
 
-        // ↑ Avançar (centro, linha 0)
         gbc.gridx = 1; gbc.gridy = 0;
         JButton btnAvancar = criarBotaoMovimento("↑  Avançar");
         btnAvancar.addActionListener(e -> painelExploracao.avancar());
         painel.add(btnAvancar, gbc);
 
-        // ← Virar Esquerda (esquerda, linha 1)
         gbc.gridx = 0; gbc.gridy = 1;
         JButton btnVirarEsq = criarBotaoMovimento("↺  Virar");
         btnVirarEsq.addActionListener(e -> painelExploracao.virarEsquerda());
         painel.add(btnVirarEsq, gbc);
 
-        // ↓ Recuar (centro, linha 1)
         gbc.gridx = 1; gbc.gridy = 1;
         JButton btnRecuar = criarBotaoMovimento("↓  Recuar");
         btnRecuar.addActionListener(e -> painelExploracao.recuar());
         painel.add(btnRecuar, gbc);
 
-        // → Virar Direita (direita, linha 1)
         gbc.gridx = 2; gbc.gridy = 1;
         JButton btnVirarDir = criarBotaoMovimento("↻  Virar");
         btnVirarDir.addActionListener(e -> painelExploracao.virarDireita());
@@ -100,9 +137,6 @@ public class TelaExploracao extends JFrame {
         return painel;
     }
 
-    // =====================================
-    // BOTÕES DE AÇÃO
-    // =====================================
     private JPanel criarPainelAcoes() {
         JPanel painel = new JPanel();
         painel.setOpaque(false);
@@ -142,11 +176,48 @@ public class TelaExploracao extends JFrame {
     /**
      * Substitui o conteúdo da janela pelo painel de combate.
      * Chamado automaticamente quando o jogador entra numa sala de inimigo.
+     * Ao término do combate, {@code finalizarCombate()} restaura a exploração.
      */
     private void abrirTelaCombate() {
         getContentPane().removeAll();
-        add(new TelaCombate());
+        add(new TelaCombate(this::finalizarCombate));
         revalidate();
         repaint();
+    }
+
+    /**
+     * Restaura a tela de exploração após o combate terminar.
+     * Retorna o jogador ao corredor mais próximo da sala de inimigo.
+     */
+    private void finalizarCombate() {
+        getContentPane().removeAll();
+        add(painelPrincipal);
+        revalidate();
+        repaint();
+        painelExploracao.voltarAoCorredorMaisProximo();
+        SwingUtilities.invokeLater(() -> painelExploracao.requestFocusInWindow());
+    }
+
+    /**
+     * Substitui o conteudo da janela pela loja. O jogador compartilhado
+     * tem sua carteira/baralho atualizados conforme compra cartas.
+     */
+    private void abrirTelaLoja() {
+        getContentPane().removeAll();
+        add(new TelaLoja(jogador, this::finalizarLoja));
+        revalidate();
+        repaint();
+    }
+
+    /**
+     * Restaura a exploracao apos sair da loja.
+     */
+    private void finalizarLoja() {
+        getContentPane().removeAll();
+        add(painelPrincipal);
+        revalidate();
+        repaint();
+        painelExploracao.voltarAoCorredorMaisProximo();
+        SwingUtilities.invokeLater(() -> painelExploracao.requestFocusInWindow());
     }
 }
