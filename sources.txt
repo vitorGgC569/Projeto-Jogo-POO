@@ -1,5 +1,7 @@
 C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\app\Main.java
+C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\app\TesteDB.java
 C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\config\DatabaseConfig.java
+C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\config\DatabaseInitializer.java
 C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\connection\ConnectionFactory.java
 C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\controller\JogoController.java
 C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\core\Combate.java
@@ -81,3 +83,4 @@ C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\ui\Tel
 C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\util\AleatorioUtil.java
 C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\util\Dado.java
 C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\util\PathUtils.java
+C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\main\java\br\edu\ifgoiano\jogo\util\AudioPlayer.java

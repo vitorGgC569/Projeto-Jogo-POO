@@ -1,0 +1,5 @@
+C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\test\java\br\edu\ifgoiano\jogo\BaralhoTest.java
+C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\test\java\br\edu\ifgoiano\jogo\CartaEfeitosTest.java
+C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\test\java\br\edu\ifgoiano\jogo\CarteiraTest.java
+C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\test\java\br\edu\ifgoiano\jogo\CombateServiceTest.java
+C:\Users\Oxta\Desktop\Projeto-Jogo-POO\src\test\java\br\edu\ifgoiano\jogo\PersonagemTest.java

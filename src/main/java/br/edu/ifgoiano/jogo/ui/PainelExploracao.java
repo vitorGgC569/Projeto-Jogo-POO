@@ -12,9 +12,8 @@ import java.util.Queue;
 
 /**
  * Painel principal de exploração da masmorra.
- * Renderiza a visão em primeira pessoa com overlay de inimigo,
- * bússola e minimapa. Dispara o combate automaticamente
- * ao entrar em uma sala de inimigo.
+ * Renderiza a visão em primeira pessoa, bússola e minimapa.
+ * Dispara o combate automaticamente ao entrar em uma sala de inimigo.
  */
 public class PainelExploracao extends JPanel {
 
@@ -32,8 +31,15 @@ public class PainelExploracao extends JPanel {
     private Runnable onLoja;
     private boolean lojaPendente = false;
 
+    /**
+     * Callback disparado após cada fade de movimento/rotação.
+     * Usado pela TelaExploracao para atualizar o estado dos botões de ação.
+     */
+    private Runnable onMovimento;
+
     private final Image imagemInimigo;
-    private final Image imagemBau;
+    private final Image imagemBauFechado;
+    private final Image imagemBauAberto;
 
     // ---- Fade ----
     private float fadeAlpha   = 0f;
@@ -56,8 +62,9 @@ public class PainelExploracao extends JPanel {
     public PainelExploracao(Masmorra masmorra) {
         this.masmorra = masmorra;
         setBackground(Color.BLACK);
-        imagemInimigo = new ImageIcon("src/Assets/inimigo_cobra.png").getImage();
-        imagemBau     = new ImageIcon("src/Assets/bau_fechado.png").getImage();
+        imagemInimigo   = new ImageIcon("src/Assets/inimigo_cobra.png").getImage();
+        imagemBauFechado = new ImageIcon("src/Assets/bau_fechado.png").getImage();
+        imagemBauAberto  = new ImageIcon("src/Assets/bau_aberto.png").getImage();
     }
 
     /**
@@ -76,6 +83,16 @@ public class PainelExploracao extends JPanel {
      */
     public void setOnLoja(Runnable cb) {
         this.onLoja = cb;
+    }
+
+    /**
+     * Define o callback chamado após cada movimento ou rotação completado (após fade).
+     * Usado para atualizar botões de ação na tela de exploração.
+     *
+     * @param cb ação a executar após cada movimento/rotação
+     */
+    public void setOnMovimento(Runnable cb) {
+        this.onMovimento = cb;
     }
 
     // =========================================================
@@ -101,7 +118,13 @@ public class PainelExploracao extends JPanel {
                 if (fadeAlpha <= 0f) {
                     fadeAlpha = 0f;
                     ((Timer) e.getSource()).stop();
-                    // Dispara combate depois que o fade termina e o inimigo aparece
+
+                    // Notifica TelaExploracao sobre o movimento (atualiza botões)
+                    if (onMovimento != null) {
+                        SwingUtilities.invokeLater(onMovimento);
+                    }
+
+                    // Dispara combate após o fade
                     if (combatePendente && onCombate != null) {
                         combatePendente = false;
                         SwingUtilities.invokeLater(onCombate);
@@ -127,22 +150,22 @@ public class PainelExploracao extends JPanel {
 
         Regiao regiaoAtual = masmorra.getRegiao(playerLinha, playerColuna);
 
-        // Camada 1 — imagem de fundo (o que está à frente ou parede)
+        // Camada 1 — imagem de fundo completa (sem overlay separado)
         Image img = resolverImagemFrente();
         if (img != null) g2.drawImage(img, 0, 0, getWidth(), getHeight(), this);
 
-        // Camada 2 — overlay das paredes laterais do corredor (PNG transparente no centro)
-        Image overlay = resolverImagemOverlay();
-        if (overlay != null) g2.drawImage(overlay, 0, 0, getWidth(), getHeight(), this);
-
-        // Camada 3 — overlay do inimigo quando o jogador está numa sala de inimigo
-        if (regiaoAtual != null && regiaoAtual.getTipoRegiao() == TipoRegiao.SALA_INIMIGO) {
+        // Camada 2 — overlay do inimigo: somente quando na sala de inimigo olhando para o interior
+        if (regiaoAtual != null
+                && regiaoAtual.getTipoRegiao() == TipoRegiao.SALA_INIMIGO
+                && playerDirecao == regiaoAtual.getDirecaoInterior()) {
             desenharInimigo(g2);
         }
 
-        // Camada 4 — overlay do baú quando o jogador está numa sala de tesouro
-        if (regiaoAtual != null && regiaoAtual.getTipoRegiao() == TipoRegiao.SALA_TESOURO) {
-            desenharBau(g2);
+        // Camada 3 — overlay do bau: somente quando na sala de tesouro olhando para o interior
+        if (regiaoAtual != null
+                && regiaoAtual.getTipoRegiao() == TipoRegiao.SALA_TESOURO
+                && playerDirecao == regiaoAtual.getDirecaoInterior()) {
+            desenharBau(g2, regiaoAtual.isBauAberto());
         }
 
         // Escurecimento do fade
@@ -187,13 +210,16 @@ public class PainelExploracao extends JPanel {
     }
 
     /**
-     * Desenha o baú de tesouro centralizado na tela,
-     * escalado para ocupar aproximadamente 55% da altura.
+     * Desenha o baú de tesouro centralizado na tela.
+     * Usa a imagem aberta ou fechada dependendo do estado da região.
+     *
+     * @param aberto true para desenhar o baú aberto
      */
-    private void desenharBau(Graphics2D g2) {
-        if (imagemBau == null) return;
-        int iw = imagemBau.getWidth(null);
-        int ih = imagemBau.getHeight(null);
+    private void desenharBau(Graphics2D g2, boolean aberto) {
+        Image bau = aberto ? imagemBauAberto : imagemBauFechado;
+        if (bau == null) return;
+        int iw = bau.getWidth(null);
+        int ih = bau.getHeight(null);
         if (iw <= 0 || ih <= 0) return;
 
         int targetH = (int)(getHeight() * 0.55);
@@ -201,39 +227,16 @@ public class PainelExploracao extends JPanel {
         int x = (getWidth() - targetW) / 2;
         int y = getHeight() - targetH - (int)(getHeight() * 0.06);
 
-        g2.drawImage(imagemBau, x, y, targetW, targetH, this);
+        g2.drawImage(bau, x, y, targetW, targetH, this);
     }
 
     /**
-     * Retorna a imagem overlay (paredes laterais) da região atual
-     * para a direção em que o jogador está olhando, ou {@code null} se não houver.
-     */
-    private Image resolverImagemOverlay() {
-        Regiao regiaoAtual = masmorra.getRegiao(playerLinha, playerColuna);
-        if (regiaoAtual == null) return null;
-        return regiaoAtual.getImagemOverlay(playerDirecao);
-    }
-
-    /**
-     * Decide qual imagem de fundo mostrar:
-     * se a frente for parede/nula, mostra imagem de parede;
-     * caso contrário mostra a imagem direcional da região atual.
+     * Decide qual imagem de fundo mostrar para a direção atual do jogador.
+     * A Regiao já encapsula o mapeamento de assets via PathUtils.
      */
     private Image resolverImagemFrente() {
         Regiao regiaoAtual = masmorra.getRegiao(playerLinha, playerColuna);
         if (regiaoAtual == null) return null;
-
-        int adjL = playerLinha  + playerDirecao.getDeltaLinha();
-        int adjC = playerColuna + playerDirecao.getDeltaColuna();
-        boolean frenteLivre = adjL >= 0 && adjL < 9 && adjC >= 0 && adjC < 5;
-        Regiao regiaoFrente = frenteLivre ? masmorra.getRegiao(adjL, adjC) : null;
-
-        boolean haParede = regiaoFrente == null || regiaoFrente.getTipoRegiao() == TipoRegiao.PAREDE;
-        if (haParede) {
-            return regiaoFrente != null
-                    ? regiaoFrente.getImagem(playerDirecao)
-                    : regiaoAtual.getImagem(playerDirecao);
-        }
         return regiaoAtual.getImagem(playerDirecao);
     }
 
@@ -461,6 +464,15 @@ public class PainelExploracao extends JPanel {
         if (novaLinha >= 0 && novaLinha < 9 && novaColuna >= 0 && novaColuna < 5) {
             iniciarFade(() -> { playerLinha = novaLinha; playerColuna = novaColuna; });
         }
+    }
+
+    /**
+     * Retorna a região onde o jogador está atualmente.
+     *
+     * @return região atual do jogador
+     */
+    public Regiao getRegiaoAtual() {
+        return masmorra.getRegiao(playerLinha, playerColuna);
     }
 
     /**

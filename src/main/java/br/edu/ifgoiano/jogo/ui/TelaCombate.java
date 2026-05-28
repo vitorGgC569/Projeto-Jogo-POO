@@ -54,6 +54,7 @@ public class TelaCombate extends JPanel {
     private JPanel       painelMao;
     private JButton      btnJogar;
     private JLabel       lblLog;
+    private JLabel       lblInimigoImg;  // referencia para animar o sprite no ataque
 
     // =========================================================
     // CONSTRUTORES
@@ -126,18 +127,38 @@ public class TelaCombate extends JPanel {
     }
 
     /**
-     * Cria um {@link Inimigo} padrao com atributos basicos.
+     * Cria um {@link Inimigo} padrao escolhendo aleatoriamente entre cobra e rato.
      *
      * @return inimigo pronto para o combate
      */
     static Inimigo criarInimigoPadrao() {
+        return Math.random() < 0.5 ? criarCobra() : criarRato();
+    }
+
+    /** Cobra Venenosa — ataque alto, vida media. */
+    static Inimigo criarCobra() {
         Inimigo i = new Inimigo();
         i.setNome("Cobra Venenosa");
+        i.setTipo("cobra");
         i.setVida(60);           i.setVidaMaxima(60);
         i.setAtaque(10);         i.setDefesa(2);
         i.setEscudo(0);          i.setNivel(1);
         i.setChanceCritico(20);  i.setInteligencia(5);
         i.setRecompensaOuro(15); i.setRecompensaXp(20);
+        i.definirProximaAcao();
+        return i;
+    }
+
+    /** Rato das Trevas — mais rapido, vida baixa, ataque moderado. */
+    static Inimigo criarRato() {
+        Inimigo i = new Inimigo();
+        i.setNome("Rato das Trevas");
+        i.setTipo("rato");
+        i.setVida(40);           i.setVidaMaxima(40);
+        i.setAtaque(7);          i.setDefesa(1);
+        i.setEscudo(0);          i.setNivel(1);
+        i.setChanceCritico(30);  i.setInteligencia(7);
+        i.setRecompensaOuro(10); i.setRecompensaXp(15);
         i.definirProximaAcao();
         return i;
     }
@@ -260,8 +281,8 @@ public class TelaCombate extends JPanel {
     }
 
     private JPanel criarAreaInimigo() {
-        final Image imgFundo  = new ImageIcon("src/Assets/sala_vazia.png").getImage();
-        final Image imgCobra  = new ImageIcon("src/Assets/inimigo_cobra.png").getImage();
+        final Image imgFundo = new ImageIcon("src/Assets/sala_vazia.png").getImage();
+        final Image imgInimigo = imagemDoInimigo();
 
         JPanel p = new JPanel(new BorderLayout()) {
             @Override
@@ -278,14 +299,69 @@ public class TelaCombate extends JPanel {
         };
         p.setOpaque(true);
 
-        JLabel imgInimigo = new JLabel("", SwingConstants.CENTER);
-        imgInimigo.setOpaque(false);
-        if (imgCobra.getWidth(null) > 0) {
-            imgInimigo.setIcon(
-                    new ImageIcon(imgCobra.getScaledInstance(-1, 320, Image.SCALE_SMOOTH)));
+        lblInimigoImg = new JLabel("", SwingConstants.CENTER);
+        lblInimigoImg.setOpaque(false);
+        if (imgInimigo != null && imgInimigo.getWidth(null) > 0) {
+            lblInimigoImg.setIcon(
+                    new ImageIcon(imgInimigo.getScaledInstance(-1, 320, Image.SCALE_SMOOTH)));
         }
-        p.add(imgInimigo, BorderLayout.CENTER);
+        p.add(lblInimigoImg, BorderLayout.CENTER);
         return p;
+    }
+
+    /**
+     * Retorna a imagem do inimigo com base no campo {@code tipo} do inimigo atual.
+     * Cobra usa {@code inimigo_cobra.png}; qualquer outro tipo usa {@code inimigo_rato.png}.
+     */
+    private Image imagemDoInimigo() {
+        String tipo = combate.getInimigo().getTipo();
+        String arquivo = "cobra".equalsIgnoreCase(tipo)
+                ? "inimigo_cobra.png"
+                : "inimigo_rato.png";
+        Image img = new ImageIcon("src/Assets/" + arquivo).getImage();
+        return img.getWidth(null) > 0 ? img : null;
+    }
+
+    /**
+     * Anima o sprite do inimigo dando um "avanço" na direcao do jogador
+     * (deslocamento horizontal para a esquerda) e retornando a posicao original.
+     * A animacao usa um {@link Timer} de 16 ms (aprox. 60 fps) e dura cerca de 400 ms.
+     *
+     * @param onFim callback executado quando a animacao terminar (pode ser null)
+     */
+    private void animarAtaqueInimigo(Runnable onFim) {
+        if (lblInimigoImg == null) { if (onFim != null) onFim.run(); return; }
+
+        final int DESLOCAMENTO_MAX = 60;  // pixels para a esquerda no pico
+        final int DURACAO_MS       = 350; // duracao total da animacao
+        final int INTERVALO_MS     = 16;  // ~60 fps
+        final int PASSOS           = DURACAO_MS / INTERVALO_MS;
+        final int MEIO             = PASSOS / 2;
+
+        final int[] passo = {0};
+        final int xOriginal = lblInimigoImg.getX();
+        final int yOriginal = lblInimigoImg.getY();
+
+        Timer t = new Timer(INTERVALO_MS, null);
+        t.addActionListener(e -> {
+            int p = passo[0]++;
+            int offset;
+            if (p <= MEIO) {
+                // avanca: 0 -> DESLOCAMENTO_MAX
+                offset = (int)(DESLOCAMENTO_MAX * Math.sin(Math.PI / 2.0 * p / MEIO));
+            } else {
+                // recua: DESLOCAMENTO_MAX -> 0
+                offset = (int)(DESLOCAMENTO_MAX * Math.sin(Math.PI / 2.0 * (PASSOS - p) / MEIO));
+            }
+            lblInimigoImg.setLocation(xOriginal - offset, yOriginal);
+
+            if (p >= PASSOS) {
+                t.stop();
+                lblInimigoImg.setLocation(xOriginal, yOriginal);
+                if (onFim != null) SwingUtilities.invokeLater(onFim);
+            }
+        });
+        t.start();
     }
 
     // ---- SUL — mao de cartas + botoes ----
@@ -596,26 +672,39 @@ public class TelaCombate extends JPanel {
     }
 
     /**
-     * Finaliza o turno do jogador: descarta a mao, executa a acao do inimigo,
-     * restaura energia e distribui nova mao de 5 cartas.
+     * Finaliza o turno do jogador: descarta a mao, executa a acao do inimigo
+     * (com animacao se for ataque), restaura energia e distribui nova mao.
      */
     private void finalizarTurno() {
         descartarMao();
-        String msgInimigo = executarTurnoInimigo();
 
-        Jogador j = combate.getJogador();
-        j.setEnergia(j.getEnergiaMaxima());
-        j.setEscudo(0);   // escudo temporario expira entre turnos
+        AcaoInimigo acaoAtual = combate.getInimigo().getProximaAcao();
+        boolean ehAtaque = acaoAtual == AcaoInimigo.ATAQUE
+                        || acaoAtual == AcaoInimigo.ATAQUE_CRITICO;
 
-        combate.getTurno().avancar();
-        comprarMao(5);
-        combate.getInimigo().definirProximaAcao();
+        Runnable executarLogica = () -> {
+            String msgInimigo = executarTurnoInimigo();
 
-        cartaSelecionada = null;
-        btnJogar.setEnabled(false);
-        definirLog(msgInimigo);
-        atualizarUI();
-        verificarFimCombate();
+            Jogador j = combate.getJogador();
+            j.setEnergia(j.getEnergiaMaxima());
+            j.setEscudo(0);
+
+            combate.getTurno().avancar();
+            comprarMao(5);
+            combate.getInimigo().definirProximaAcao();
+
+            cartaSelecionada = null;
+            btnJogar.setEnabled(false);
+            definirLog(msgInimigo);
+            atualizarUI();
+            verificarFimCombate();
+        };
+
+        if (ehAtaque) {
+            animarAtaqueInimigo(executarLogica);
+        } else {
+            executarLogica.run();
+        }
     }
 
     // =========================================================

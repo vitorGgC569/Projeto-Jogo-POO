@@ -7,28 +7,38 @@ import br.edu.ifgoiano.jogo.entidades.Jogador;
 import br.edu.ifgoiano.jogo.entidades.Mao;
 import br.edu.ifgoiano.jogo.entidades.Masmorra;
 import br.edu.ifgoiano.jogo.entidades.PilhaDescarte;
+import br.edu.ifgoiano.jogo.entidades.Regiao;
+import br.edu.ifgoiano.jogo.enums.Direcao;
+import br.edu.ifgoiano.jogo.enums.TipoRegiao;
 import br.edu.ifgoiano.jogo.factory.CartaFactory;
+import br.edu.ifgoiano.jogo.util.AudioPlayer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Tela principal de exploração da masmorra em primeira pessoa.
  * Exibe a visão do jogador via {@link PainelExploracao}, a bússola,
  * o minimapa e os botões de movimento e ação.
- * Mantem um {@link Jogador} unico compartilhado entre exploracao,
+ * Mantém um {@link Jogador} único compartilhado entre exploração,
  * combate e loja para preservar carteira, baralho e progresso.
  */
 public class TelaExploracao extends JFrame {
 
     private PainelExploracao painelExploracao;
-    /** Painel principal de exploração — reutilizado ao retornar do combate. */
+    /** Painel principal de exploração — reutilizado ao retornar do combate/loja. */
     private JPanel painelPrincipal;
 
-    /** Jogador unico compartilhado entre combate, exploracao e loja. */
+    /** Jogador único compartilhado entre combate, exploração e loja. */
     private final Jogador jogador;
+
+    /** Botão de abrir baú — habilitado somente quando o jogador está na posição correta. */
+    private JButton btnAbrirBau;
+
+    private static final Random RANDOM = new Random();
 
     /**
      * Cria e exibe a tela de exploração em tela cheia.
@@ -43,11 +53,14 @@ public class TelaExploracao extends JFrame {
 
         criarInterface();
         setVisible(true);
+
+        // Música de exploração
+        AudioPlayer.tocarMusica("xDeviruchi - Mysterious Dungeon.wav");
     }
 
     /**
      * Cria o jogador inicial com baralho, mao, descarte e carteira.
-     * E mantido entre as telas (exploracao, combate, loja).
+     * É mantido entre as telas (exploração, combate, loja).
      */
     private Jogador criarJogadorInicial() {
         List<Carta> cartas = new ArrayList<>();
@@ -90,6 +103,7 @@ public class TelaExploracao extends JFrame {
 
         painelExploracao.setOnCombate(this::abrirTelaCombate);
         painelExploracao.setOnLoja(this::abrirTelaLoja);
+        painelExploracao.setOnMovimento(this::atualizarBotoes);
         painelExploracao.setFocusable(true);
         SwingUtilities.invokeLater(() -> painelExploracao.requestFocusInWindow());
     }
@@ -142,13 +156,88 @@ public class TelaExploracao extends JFrame {
         painel.setOpaque(false);
         painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
 
+        btnAbrirBau = criarBotaoAcao("ABRIR BAU");
+        btnAbrirBau.setEnabled(false);
+        btnAbrirBau.addActionListener(e -> abrirBau());
+
         JButton btnSair = criarBotaoAcao("SAIR");
         btnSair.addActionListener(e -> System.exit(0));
 
+        painel.add(btnAbrirBau);
+        painel.add(Box.createVerticalStrut(12));
         painel.add(btnSair);
 
         return painel;
     }
+
+    // =====================================
+    // LÓGICA DO BAÚ
+    // =====================================
+
+    /**
+     * Atualiza o estado dos botões de ação com base na posição e direção do jogador.
+     * Chamado automaticamente após cada movimento/rotação (callback onMovimento).
+     */
+    private void atualizarBotoes() {
+        Regiao reg = painelExploracao.getRegiaoAtual();
+        Direcao dir = painelExploracao.getPlayerDirecao();
+
+        boolean podAbrirBau = reg != null
+                && reg.getTipoRegiao() == TipoRegiao.SALA_TESOURO
+                && dir == reg.getDirecaoInterior()
+                && !reg.isBauAberto();
+
+        btnAbrirBau.setEnabled(podAbrirBau);
+    }
+
+    /**
+     * Abre o baú da sala de tesouro atual, concede recompensa ao jogador e
+     * exibe um diálogo informando o loot obtido.
+     */
+    private void abrirBau() {
+        Regiao reg = painelExploracao.getRegiaoAtual();
+        if (reg == null || reg.isBauAberto()) return;
+
+        reg.setBauAberto(true);
+        btnAbrirBau.setEnabled(false);
+
+        // Rola a recompensa: 1 = ouro, 2 = carta, 3 = ambos
+        int rolar = RANDOM.nextInt(3) + 1;
+        int ouro  = 0;
+        Carta cartaGanha = null;
+        StringBuilder msg = new StringBuilder("Você abriu o baú!\n\n");
+
+        if (rolar == 1 || rolar == 3) {
+            ouro = 20 + RANDOM.nextInt(61); // 20–80 moedas
+            if (jogador.getCarteira() != null) {
+                jogador.getCarteira().adicionar(ouro);
+            }
+            msg.append("Ouro encontrado: ").append(ouro).append(" moedas\n");
+        }
+
+        if (rolar == 2 || rolar == 3) {
+            cartaGanha = CartaFactory.criarCartaAleatoria();
+            if (jogador.getBaralho() != null) {
+                jogador.getBaralho().adicionarCarta(cartaGanha);
+            }
+            msg.append("Carta encontrada: ").append(cartaGanha.getNome());
+        }
+
+        JOptionPane.showMessageDialog(
+                this,
+                msg.toString(),
+                "Baú de Tesouro",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+
+        // Repintar para mostrar baú aberto
+        painelExploracao.repaint();
+        SwingUtilities.invokeLater(() -> painelExploracao.requestFocusInWindow());
+    }
+
+    // =====================================
+    // CRIAÇÃO DE BOTÕES
+    // =====================================
 
     private JButton criarBotaoMovimento(String texto) {
         JButton botao = new JButton(texto);
@@ -173,12 +262,17 @@ public class TelaExploracao extends JFrame {
         return botao;
     }
 
+    // =====================================
+    // TRANSIÇÕES DE TELA E MÚSICA
+    // =====================================
+
     /**
      * Substitui o conteúdo da janela pelo painel de combate.
      * Chamado automaticamente quando o jogador entra numa sala de inimigo.
      * Ao término do combate, {@code finalizarCombate()} restaura a exploração.
      */
     private void abrirTelaCombate() {
+        AudioPlayer.tocarMusica("xDeviruchi - Decisive Battle.wav");
         getContentPane().removeAll();
         add(new TelaCombate(this::finalizarCombate));
         revalidate();
@@ -190,11 +284,13 @@ public class TelaExploracao extends JFrame {
      * Retorna o jogador ao corredor mais próximo da sala de inimigo.
      */
     private void finalizarCombate() {
+        AudioPlayer.tocarMusica("xDeviruchi - Mysterious Dungeon.wav");
         getContentPane().removeAll();
         add(painelPrincipal);
         revalidate();
         repaint();
         painelExploracao.voltarAoCorredorMaisProximo();
+        atualizarBotoes();
         SwingUtilities.invokeLater(() -> painelExploracao.requestFocusInWindow());
     }
 
@@ -203,6 +299,7 @@ public class TelaExploracao extends JFrame {
      * tem sua carteira/baralho atualizados conforme compra cartas.
      */
     private void abrirTelaLoja() {
+        AudioPlayer.tocarMusica("xDeviruchi - Take some rest and eat some food!.wav");
         getContentPane().removeAll();
         add(new TelaLoja(jogador, this::finalizarLoja));
         revalidate();
@@ -210,14 +307,16 @@ public class TelaExploracao extends JFrame {
     }
 
     /**
-     * Restaura a exploracao apos sair da loja.
+     * Restaura a exploração após sair da loja.
      */
     private void finalizarLoja() {
+        AudioPlayer.tocarMusica("xDeviruchi - Mysterious Dungeon.wav");
         getContentPane().removeAll();
         add(painelPrincipal);
         revalidate();
         repaint();
         painelExploracao.voltarAoCorredorMaisProximo();
+        atualizarBotoes();
         SwingUtilities.invokeLater(() -> painelExploracao.requestFocusInWindow());
     }
 }

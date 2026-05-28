@@ -8,6 +8,8 @@ out/
 diagrama_classes.puml
 gerar_diagrama.py
 gerar_drawio.py
+analise_estatica_projeto.md
+
 
 ### Eclipse ###
 .apt_generated

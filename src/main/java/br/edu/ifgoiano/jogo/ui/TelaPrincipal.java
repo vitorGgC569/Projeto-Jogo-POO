@@ -1,5 +1,7 @@
 package br.edu.ifgoiano.jogo.ui;
 
+import br.edu.ifgoiano.jogo.util.AudioPlayer;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -21,6 +23,7 @@ public class TelaPrincipal extends JFrame {
         configurarJanela();
         carregarImagem();
         criarInterface();
+        AudioPlayer.tocarMusica("xDeviruchi - Title Theme .wav");
     }
 
 
@@ -37,9 +40,7 @@ public class TelaPrincipal extends JFrame {
 
 
     private void carregarImagem() {
-
-
-        imagemFundo = null;
+        imagemFundo = new ImageIcon("src/Assets/img.png").getImage();
     }
 
 
@@ -152,6 +153,7 @@ public class TelaPrincipal extends JFrame {
                 criarBotao("Novo Jogo");
 
         btnNovoJogo.addActionListener(e -> {
+            AudioPlayer.pararMusica();
             dispose();
             TelaExploracao telaExploracao = new TelaExploracao();
             telaExploracao.setVisible(true);
